@@ -17,8 +17,8 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2021-01-15' = {
     reserved: true
   }
   sku: {
-    name: 'PremiumV2'
-    tier: 'P1v2'
+    name: 'P1v2'
+    tier: 'PremiumV2'
   }
 }
 
