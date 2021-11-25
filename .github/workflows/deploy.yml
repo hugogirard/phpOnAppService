@@ -1,0 +1,35 @@
+name: Deploy
+
+on:
+  push:
+
+env:
+  LOCATION: 'eastus'
+  RESOURCE_GROUP_NAME: 'rg-app-service-php-demo'
+  FILESHARE_NAME: 'filephpdisk'
+
+jobs:
+  create-azure-resources:
+
+  runs-on: ubuntu-latest
+
+  steps:
+    
+    - uses: actions/checkout@v2
+
+    - name: Azure Login
+      uses: Azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Create Resource Group
+      run: |
+        az group create -n ${{ env.RESOURCE_GROUP_NAME }} -l ${{ env.LOCATION }}
+
+    - name: Deploy Azure Resources
+      id: armDeployment
+      uses: azure/arm-deploy@v1
+      with:
+        resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
+        template: ./bicep/main.bicep
+        parameters: location=${{ env.LOCATION }} fileShareName=${{ env.FILESHARE_NAME }}          
