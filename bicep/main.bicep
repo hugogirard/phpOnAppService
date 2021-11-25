@@ -11,6 +11,7 @@ var webAppName = 'app-php-${suffix}'
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-01-15' = {
   name: 'plan-php-${suffix}'
+  kind: 'linux'
   location: location
   sku: {
     name: 'B1'
