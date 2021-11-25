@@ -43,7 +43,7 @@ jobs:
           
       - name: output web app name
         run: |
-        echo ${{ steps.armDeployment.outputs.webName }}
+          echo ${{ steps.armDeployment.outputs.webName }}
   
   build-and-deploy:
     
