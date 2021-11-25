@@ -39,7 +39,11 @@ jobs:
         with:
           resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
           template: ./bicep/main.bicep
-          parameters: location=${{ env.LOCATION }} fileShareName=${{ env.FILESHARE_NAME }}          
+          parameters: location=${{ env.LOCATION }} fileShareName=${{ env.FILESHARE_NAME }}   
+          
+      - name: output web app name
+        run: |
+        echo ${{ steps.armDeployment.outputs.webName }}
   
   build-and-deploy:
     
