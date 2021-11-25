@@ -13,9 +13,12 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2021-01-15' = {
   name: 'plan-php-${suffix}'
   kind: 'linux'
   location: location
+  properties: {    
+    reserved: true
+  }
   sku: {
-    name: 'B1'
-    tier: 'Basic'
+    name: 'PremiumV2'
+    tier: 'P1v2'
   }
 }
 
