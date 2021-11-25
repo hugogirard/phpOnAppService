@@ -44,6 +44,5 @@ resource sa 'Microsoft.Storage/storageAccounts@2021-04-01' = {
 }
 
 resource fileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2021-04-01' = {
-  parent: sa
   name: '${sa.name}/default/${fileShareName}'
 }
