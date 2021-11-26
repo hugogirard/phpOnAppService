@@ -9,7 +9,7 @@ env:
   LOCATION: 'eastus'
   RESOURCE_GROUP_NAME: 'rg-app-service-php-demo'
   FILESHARE_NAME: 'filephpdisk'
-  AZURE_WEBAPP_PACKAGE_PATH: './src'
+  AZURE_WEBAPP_PACKAGE_PATH: './src'  
 
 jobs:
 
@@ -19,6 +19,7 @@ jobs:
 
     outputs:
       webAppName: ${{ steps.armDeployment.outputs.webName }}
+      webNodeName: ${{ steps.armDeployment.outputs.webNodeName }}
 
     steps:
 
@@ -45,7 +46,7 @@ jobs:
         run: |
           echo ${{ steps.armDeployment.outputs.webName }}
   
-  build-and-deploy:
+  build-and-deploy-php-app:
     
     needs: create-azure-resources
 
@@ -69,3 +70,33 @@ jobs:
           app-name: ${{ needs.create-azure-resources.outputs.webAppName }}
           package: ${{ env.WEBAPP_PACKAGE_DIR }}
               
+  build-and-deloy-node-app:
+    
+    needs: create-azure-resources
+
+    runs-on: ubuntu-latest
+
+    env:
+      AZURE_WEBAPP_PACKAGE_PATH: './nodeapp'
+      NODE_VERSION: '14.x'
+
+    steps:
+
+      - uses: actions/checkout@v2    
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: npm install
+        run: |
+          npm install
+
+      - name: 'Deploy to Azure WebApp'
+        with:
+          app-name: ${{ needs.create-azure-resources.outputs.webNodeName }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}                
+
+
+          

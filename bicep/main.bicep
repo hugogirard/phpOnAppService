@@ -7,7 +7,8 @@ param location string
 param fileShareName string
 
 var suffix = uniqueString(resourceGroup().id)
-var webAppName = 'app-php-${suffix}'
+var webAppPhpName = 'app-php-${suffix}'
+var webappNodeName = 'app-node-${suffix}'
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-01-15' = {
   name: 'plan-php-${suffix}'
@@ -22,14 +23,28 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2021-01-15' = {
   }
 }
 
-resource webApp 'Microsoft.Web/sites@2021-02-01' = {
-  name: webAppName
+resource webAppPhp 'Microsoft.Web/sites@2021-02-01' = {
+  name: webAppPhpName
   location: location
   properties: {    
     serverFarmId: appServicePlan.id
     clientAffinityEnabled: false
     siteConfig: {      
       linuxFxVersion: 'PHP|8.0'
+      alwaysOn: true
+    }
+  }
+}
+
+
+resource webAppNode 'Microsoft.Web/sites@2021-02-01' = {
+  name: webappNodeName
+  location: location
+  properties: {    
+    serverFarmId: appServicePlan.id
+    clientAffinityEnabled: false
+    siteConfig: {      
+      linuxFxVersion: 'NODE|14-lts'
       alwaysOn: true
     }
   }
@@ -51,4 +66,5 @@ resource fileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2021-0
   name: '${sa.name}/default/${fileShareName}'
 }
 
-output webName string = webApp.name
+output webName string = webAppPhp.name
+output webNodeName string = webAppNode.name
