@@ -30,3 +30,8 @@ class FileController {
         return this.router;
     }
 }
+
+module.exports = function(express) {
+    const fileController = new FileController(express);
+    return fileController;
+}
