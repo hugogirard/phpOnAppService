@@ -84,8 +84,7 @@ jobs:
 
       - uses: actions/checkout@master
 
-      - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v2
+      - uses: actions/setup-node@v2
         with:
           node-version: ${{ env.NODE_VERSION }}
 
@@ -94,6 +93,7 @@ jobs:
           npm install
 
       - name: 'Deploy to Azure WebApp'
+        uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ needs.create-azure-resources.outputs.webNodeName }}
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}                
