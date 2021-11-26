@@ -47,7 +47,7 @@ class IndexController extends BaseController
         if (strtoupper($requestMethod) == 'GET') {
             try {
                 
-                $file = "phpvolume/guid.txt";
+                $file = "app/guid.txt";
          
                 if(!is_file($file)){
                     touch($file);
