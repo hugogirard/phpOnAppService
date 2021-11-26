@@ -17,8 +17,10 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      webAppName: ${{ steps.armDeployment.outputs.webName }}
+      webPhpAppName: ${{ steps.armDeployment.outputs.webName }}
       webNodeName: ${{ steps.armDeployment.outputs.webNodeName }}
+      storageName: ${{ steps.armDeployment.outputs.storageName }}
+      storageKey: ${{ steps.armDeployment.outputs.storageKey }}
 
     steps:
 
@@ -44,6 +46,12 @@ jobs:
       - name: output web app name
         run: |
           echo ${{ steps.armDeployment.outputs.webName }}
+
+      - uses: gliech/create-github-secret-action@v1
+        with:
+          name: STORAGE_KEY
+          value: ${{ steps.armDeployment.outputs.storageKey }}
+          pa_token: ${{ secrets.PA_TOKEN }}          
   
   build-and-deploy-php-app:
     
@@ -66,7 +74,7 @@ jobs:
       - name: 'Deploy to Azure WebApp'
         uses: azure/webapps-deploy@v2
         with: 
-          app-name: ${{ needs.create-azure-resources.outputs.webAppName }}
+          app-name: ${{ needs.create-azure-resources.outputs.webPhpAppName }}
           package: ${{ env.WEBAPP_PACKAGE_DIR }}
               
   build-and-deloy-node-app:
@@ -103,5 +111,26 @@ jobs:
           app-name: ${{ needs.create-azure-resources.outputs.webNodeName }}
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}                
 
+  mount-file-share:
+    
+    needs: [create-azure-resources,build-and-deploy-php-app,build-and-deloy-node-app]
 
+    runs-on: ubuntu-latest
+
+    steps:        
+
+      - name: mount storage php
+        run: |
+          {
+            az webapp config storage-account add --resource-group ${{ env.RESOURCE_GROUP_NAME }} --name ${{ needs.create-azure-resources.outputs.webPhpAppName }} --custom-id strshare --storage-type AzureFiles --share-name ${{ env.FILESHARE_NAME }} --account-name ${{ needs.create-azure-resources.outputs.storageName }} --access-key ${{ secrets.STORAGE_KEY }} --mount-path /var/www/html/app          
+          } || {
+            az webapp config storage-account update --resource-group ${{ env.RESOURCE_GROUP_NAME }} --name ${{ needs.create-azure-resources.outputs.webPhpAppName }} --custom-id strshare --storage-type AzureFiles --share-name ${{ env.FILESHARE_NAME }} --account-name ${{ needs.create-azure-resources.outputs.storageName }} --access-key ${{ secrets.STORAGE_KEY }} --mount-path /var/www/html/app          
+          }
           
+      - name: mount storage node
+        run: |
+          {
+            az webapp config storage-account add --resource-group ${{ env.RESOURCE_GROUP_NAME }} --name ${{ needs.create-azure-resources.outputs.webNodeName }} --custom-id strshare --storage-type AzureFiles --share-name ${{ env.FILESHARE_NAME }} --account-name ${{ needs.create-azure-resources.outputs.storageName }} --access-key ${{ secrets.STORAGE_KEY }} --mount-path /var/www/html/app          
+          } || {
+            az webapp config storage-account update --resource-group ${{ env.RESOURCE_GROUP_NAME }} --name ${{ needs.create-azure-resources.outputs.webNodeName }} --custom-id strshare --storage-type AzureFiles --share-name ${{ env.FILESHARE_NAME }} --account-name ${{ needs.create-azure-resources.outputs.storageName }} --access-key ${{ secrets.STORAGE_KEY }} --mount-path /var/www/html/app          
+          }          

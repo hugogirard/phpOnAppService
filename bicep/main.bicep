@@ -7,64 +7,26 @@ param location string
 param fileShareName string
 
 var suffix = uniqueString(resourceGroup().id)
-var webAppPhpName = 'app-php-${suffix}'
-var webappNodeName = 'app-node-${suffix}'
 
-resource appServicePlan 'Microsoft.Web/serverfarms@2021-01-15' = {
-  name: 'plan-php-${suffix}'
-  kind: 'linux'
-  location: location
-  properties: {    
-    reserved: true
-  }
-  sku: {
-    name: 'P1v2'
-    tier: 'PremiumV2'
+
+module str 'modules/storage/storage.bicep' = {
+  name: 'str'
+  params: {
+    fileShareName: fileShareName
+    locations: location
+    suffix: suffix
   }
 }
 
-resource webAppPhp 'Microsoft.Web/sites@2021-02-01' = {
-  name: webAppPhpName
-  location: location
-  properties: {    
-    serverFarmId: appServicePlan.id
-    clientAffinityEnabled: false
-    siteConfig: {      
-      linuxFxVersion: 'PHP|8.0'
-      alwaysOn: true
-    }
+module web 'modules/web/web.bicep' = {
+  name: 'web'
+  params: {
+    location: location
+    suffix: suffix
   }
 }
 
-
-resource webAppNode 'Microsoft.Web/sites@2021-02-01' = {
-  name: webappNodeName
-  location: location
-  properties: {    
-    serverFarmId: appServicePlan.id
-    clientAffinityEnabled: false
-    siteConfig: {      
-      linuxFxVersion: 'NODE|14-lts'
-      alwaysOn: true
-    }
-  }
-}
-
-resource sa 'Microsoft.Storage/storageAccounts@2021-04-01' = {
-  name: 'str${suffix}'
-  location: location
-  kind: 'StorageV2'
-  sku: {
-    name: 'Standard_LRS'
-  }
-  properties: {
-    accessTier: 'Hot'
-  }
-}
-
-resource fileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2021-04-01' = {
-  name: '${sa.name}/default/${fileShareName}'
-}
-
-output webName string = webAppPhp.name
-output webNodeName string = webAppNode.name
+output webPhpName string = web.outputs.webPhpName
+output webNodeName string = web.outputs.webNodeName
+output storageName string = str.outputs.storageName
+output storageKey string = str.outputs.accessKey
