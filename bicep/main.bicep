@@ -13,7 +13,7 @@ module str 'modules/storage/storage.bicep' = {
   name: 'str'
   params: {
     fileShareName: fileShareName
-    locations: location
+    location: location
     suffix: suffix
   }
 }
