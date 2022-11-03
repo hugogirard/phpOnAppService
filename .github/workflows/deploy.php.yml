@@ -6,9 +6,7 @@ on:
 jobs:
   
   build-and-deploy-php-app:
-    
-    needs: create-azure-resources
-
+        
     runs-on: ubuntu-latest
     
     env:
