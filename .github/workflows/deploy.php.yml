@@ -1,0 +1,30 @@
+name: Deploy PHP App
+
+on:
+  workflow_dispatch:    
+
+jobs:
+  
+  build-and-deploy-php-app:
+    
+    needs: create-azure-resources
+
+    runs-on: ubuntu-latest
+    
+    env:
+      WEBAPP_PACKAGE_DIR: 'src/php'
+    
+    steps:
+
+      - uses: actions/checkout@master
+
+      - name: Azure Login
+        uses: Azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 'Deploy to Azure WebApp'
+        uses: azure/webapps-deploy@v2
+        with: 
+          app-name: ${{ secrets.PHP_WEB_APP_NAME }}
+          package: ${{ env.WEBAPP_PACKAGE_DIR }}  
