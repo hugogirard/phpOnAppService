@@ -1,6 +1,7 @@
 name: Deploy PHP App
 
 on:
+  pull_request:
   workflow_dispatch:    
 
 jobs:
