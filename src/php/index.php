@@ -243,7 +243,7 @@ function DisplayUploadPictureForm( $productID, $name )
 {  
     echo "<h3 align='center'>Upload Picture</h3>";  
     echo "<h4 align='center'>$name</h4>";  
-    echo "<form align='center' action='adventureworks_demo.php'  
+    echo "<form align='center' action='index.php'  
                     enctype='multipart/form-data' method='POST'>  
 <input type='hidden' name='action' value='uploadpicture'/>  
 <input type='hidden' name='productid' value='$productID'/>  
@@ -264,7 +264,7 @@ function DisplayUploadPictureForm( $productID, $name )
   
 function DisplayWriteReviewButton( $productID )  
 {  
-    echo "<table align='center'><form action='adventureworks_demo.php'   
+    echo "<table align='center'><form action='index.php'   
                  enctype='multipart/form-data' method='POST'>  
           <input type='hidden' name='action' value='writereview'/>  
           <input type='hidden' name='productid' value='$productID'/>  
@@ -277,7 +277,7 @@ function DisplayWriteReviewForm( $productID )
     /* Display the form for entering a product review */  
     echo "<h5 align='center'>Name, E-mail, and Rating are required fields.</h5>";  
     echo "<table align='center'>  
-<form action='adventureworks_demo.php'   
+<form action='index.php'   
                 enctype='multipart/form-data' method='POST'>  
 <input type='hidden' name='action' value='submitreview'/>  
 <input type='hidden' name='productid' value='$productID'/>  
@@ -321,7 +321,7 @@ function GetSearchTerms( $success )
 echo "<h4 align='center'>Review successfully submitted.</h4>";}  
 echo "<h4 align='center'>Enter search terms to find products.</h4>";  
 echo "<table align='center'>  
-            <form action='adventureworks_demo.php'   
+            <form action='index.php'   
                   enctype='multipart/form-data' method='POST'>  
             <input type='hidden' name='action' value='getresults'/>  
             <tr>  
@@ -363,7 +363,7 @@ function PopulateProductsTable( $values )  {
         }  
     }  
     echo "<td>  
-            <form action='adventureworks_demo.php'   
+            <form action='index.php'   
                   enctype='multipart/form-data' method='POST'>  
             <input type='hidden' name='action' value='writereview'/>  
             <input type='hidden' name='productid' value='$productID'/>  
